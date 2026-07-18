@@ -1,113 +1,115 @@
-/* ==========================================================
+/* ==========================================
    Academic Portfolio
    script.js
-========================================================== */
+========================================== */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
 
-    /* ==========================================
-       Dark / Light Mode
-    ========================================== */
+    /* =====================================
+       Sidebar Toggle
+    ===================================== */
 
-    const themeToggle = document.getElementById("themeToggle");
+    const menuButton = document.getElementById("menuToggle");
+    const sidebar = document.querySelector(".sidebar");
+    const overlay = document.getElementById("overlay");
 
-    if(localStorage.getItem("theme") === "dark"){
-        document.body.classList.add("dark-mode");
-        if(themeToggle){
-            themeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
-        }
+    if (menuButton && sidebar) {
+
+        menuButton.addEventListener("click", function () {
+
+            sidebar.classList.toggle("open");
+
+            if (overlay) {
+                overlay.classList.toggle("show");
+            }
+
+        });
+
     }
 
-    if(themeToggle){
+    if (overlay) {
 
-        themeToggle.addEventListener("click",()=>{
+        overlay.addEventListener("click", function () {
+
+            sidebar.classList.remove("open");
+            overlay.classList.remove("show");
+
+        });
+
+    }
+
+    /* =====================================
+       Close Sidebar on Mobile
+    ===================================== */
+
+    document.querySelectorAll(".sidebar a").forEach(link => {
+
+        link.addEventListener("click", function () {
+
+            sidebar.classList.remove("open");
+
+            if (overlay) {
+                overlay.classList.remove("show");
+            }
+
+        });
+
+    });
+
+    /* =====================================
+       Dark Mode
+    ===================================== */
+
+    const themeButton = document.getElementById("themeToggle");
+
+    if (localStorage.getItem("theme") === "dark") {
+
+        document.body.classList.add("dark-mode");
+
+        if (themeButton) {
+            themeButton.innerHTML =
+                '<i class="fa-solid fa-sun"></i>';
+        }
+
+    }
+
+    if (themeButton) {
+
+        themeButton.addEventListener("click", function () {
 
             document.body.classList.toggle("dark-mode");
 
-            if(document.body.classList.contains("dark-mode")){
+            if (document.body.classList.contains("dark-mode")) {
 
-                localStorage.setItem("theme","dark");
+                localStorage.setItem("theme", "dark");
 
-                themeToggle.innerHTML =
-                '<i class="fa-solid fa-sun"></i>';
+                themeButton.innerHTML =
+                    '<i class="fa-solid fa-sun"></i>';
 
-            }else{
+            } else {
 
-                localStorage.setItem("theme","light");
+                localStorage.setItem("theme", "light");
 
-                themeToggle.innerHTML =
-                '<i class="fa-solid fa-moon"></i>';
+                themeButton.innerHTML =
+                    '<i class="fa-solid fa-moon"></i>';
 
             }
 
         });
 
     }
-    
-    /* ==========================================
-       Mobile Sidebar
-    ========================================== */
-  
 
-   const menuToggle = document.getElementById("menuToggle");
-   const sidebar = document.querySelector(".sidebar");
-   const overlay = document.getElementById("overlay");
-
-    menuToggle.onclick = () => {
-
-    sidebar.classList.toggle("open");
-    overlay.classList.toggle("show");
-
-    };
-
-    overlay.onclick = () => {
-
-    sidebar.classList.remove("open");
-    overlay.classList.remove("show");
-
-    };
- /*
-    const sidebar=document.querySelector(".sidebar");
-
-    const menu=document.createElement("button");
-
-    menu.className="menu-toggle";
-
-    menu.innerHTML='<i class="fa-solid fa-bars"></i>';
-
-    document.body.appendChild(menu);
-
-    menu.addEventListener("click",()=>{
-
-        sidebar.classList.toggle("active");
-
-    });*/
-
-    /* ==========================================
-       Close Sidebar on Link Click (Mobile)
-    ========================================== */
-
-    document.querySelectorAll(".sidebar a").forEach(link=>{
-
-        link.addEventListener("click",()=>{
-
-            sidebar.classList.remove("active");
-
-        });
-
-    });
-
-    /* ==========================================
+    /* =====================================
        Scroll Animation
-    ========================================== */
+    ===================================== */
 
-    const sections=document.querySelectorAll(".section");
+    const sections = document.querySelectorAll(".section");
 
-    const observer=new IntersectionObserver(entries=>{
+    const observer = new IntersectionObserver(function (entries) {
 
-        entries.forEach(entry=>{
+        entries.forEach(function (entry) {
 
-            if(entry.isIntersecting){
+            if (entry.isIntersecting) {
 
                 entry.target.classList.add("show");
 
@@ -115,13 +117,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         });
 
-    },{
+    }, {
 
         threshold:0.15
 
     });
 
-    sections.forEach(section=>{
+    sections.forEach(function(section){
 
         section.classList.add("fade-in");
 
@@ -129,33 +131,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
     });
 
-    /* ==========================================
+    /* =====================================
        Back To Top Button
-    ========================================== */
+    ===================================== */
 
-    const topButton=document.createElement("button");
+    const topButton = document.createElement("button");
 
-    topButton.id="backToTop";
+    topButton.id = "backToTop";
 
-    topButton.innerHTML='<i class="fa-solid fa-arrow-up"></i>';
+    topButton.innerHTML =
+        '<i class="fa-solid fa-arrow-up"></i>';
 
     document.body.appendChild(topButton);
 
-    window.addEventListener("scroll",()=>{
+    window.addEventListener("scroll", function(){
 
-        if(window.scrollY>400){
+        if(window.scrollY > 400){
 
-            topButton.style.display="block";
+            topButton.style.display = "block";
 
         }else{
 
-            topButton.style.display="none";
+            topButton.style.display = "none";
 
         }
 
     });
 
-    topButton.addEventListener("click",()=>{
+    topButton.addEventListener("click", function(){
 
         window.scrollTo({
 
@@ -167,25 +170,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
     });
 
-    /* ==========================================
+    /* =====================================
        Publication Search
-    ========================================== */
+    ===================================== */
 
-    const search=document.getElementById("publicationSearch");
+    const search =
+        document.getElementById("publicationSearch");
 
     if(search){
 
-        search.addEventListener("keyup",()=>{
+        search.addEventListener("keyup", function(){
 
-            const value=search.value.toLowerCase();
+            const value = this.value.toLowerCase();
 
             document.querySelectorAll(".publication-item")
-            .forEach(item=>{
+            .forEach(function(item){
 
-                item.style.display=
-                item.innerText.toLowerCase().includes(value)
-                ? "block"
-                : "none";
+                if(item.innerText.toLowerCase().includes(value)){
+
+                    item.style.display="block";
+
+                }else{
+
+                    item.style.display="none";
+
+                }
 
             });
 
@@ -193,49 +202,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-    /* ==========================================
+    /* =====================================
        Contact Form
-    ========================================== */
+    ===================================== */
 
-    const form=document.getElementById("contactForm");
+    const contactForm =
+        document.getElementById("contactForm");
 
-    if(form){
+    if(contactForm){
 
-        form.addEventListener("submit",(e)=>{
+        contactForm.addEventListener("submit", function(e){
 
             e.preventDefault();
 
-            alert("Thank you! Your message has been sent.");
+            alert("Message sent successfully!");
 
-            form.reset();
+            contactForm.reset();
 
         });
 
     }
 
-    /* ==========================================
+    /* =====================================
        Newsletter
-    ========================================== */
+    ===================================== */
 
-    const newsletter=document.querySelector(".newsletter-form");
+    const newsletter =
+        document.querySelector(".newsletter-form");
 
     if(newsletter){
 
-        newsletter.addEventListener("submit",(e)=>{
+        newsletter.addEventListener("submit", function(e){
 
             e.preventDefault();
 
-            const email=newsletter.querySelector("input");
-
-            if(email.value.trim()===""){
-
-                alert("Please enter your email.");
-
-                return;
-
-            }
-
-            alert("Subscribed Successfully!");
+            alert("Thank you for subscribing!");
 
             newsletter.reset();
 
@@ -243,78 +244,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-    /* ==========================================
+    /* =====================================
        Active Navigation
-    ========================================== */
+    ===================================== */
 
-    const currentPage=
-    window.location.pathname.split("/").pop();
+    const page =
+        window.location.pathname.split("/").pop();
 
-    document.querySelectorAll(".sidebar nav a")
-    .forEach(link=>{
+    document.querySelectorAll(".sidebar a")
+    .forEach(function(link){
 
-        const href=link.getAttribute("href");
-
-        if(href===currentPage){
+        if(link.getAttribute("href") === page){
 
             link.parentElement.classList.add("active");
-
-        }
-
-    });
-
-    /* ==========================================
-       Image Hover Animation
-    ========================================== */
-
-    document.querySelectorAll("img").forEach(img=>{
-
-        img.addEventListener("mouseenter",()=>{
-
-            img.style.transform="scale(1.03)";
-
-        });
-
-        img.addEventListener("mouseleave",()=>{
-
-            img.style.transform="scale(1)";
-
-        });
-
-    });
-
-    /* ==========================================
-       Card Hover Shadow
-    ========================================== */
-
-    document.querySelectorAll(".card").forEach(card=>{
-
-        card.addEventListener("mouseenter",()=>{
-
-            card.style.boxShadow=
-            "0 18px 35px rgba(0,0,0,.15)";
-
-        });
-
-        card.addEventListener("mouseleave",()=>{
-
-            card.style.boxShadow="";
-
-        });
-
-    });
-
-    /* ==========================================
-       Footer Year
-    ========================================== */
-
-    document.querySelectorAll("footer p").forEach(p=>{
-
-        if(p.innerText.includes("©")){
-
-            p.innerText=
-            "© "+new Date().getFullYear()+
-            " Academic Portfolio";
 
         }
 
