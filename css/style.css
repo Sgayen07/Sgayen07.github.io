@@ -1885,16 +1885,16 @@ transform:scale(1.02);
 
 }
 #typing-element {
-  font-family: sans-serif; /* Adjust to match your preference */
-  font-weight: 300;
-  color: #263238; /* Use white or a light grey */
+  font-family: serif; /* Matches your header */
+  font-size: 1.5em;
+  color: #333;
+  text-align: left; /* Keep it left-aligned so the cursor tracks correctly */
+  display: inline-block; /* Keeps the element only as wide as the text */
 }
 
-/* This styles the cursor specifically */
-.typed-cursor {
-  opacity: 1;
-  color: #aaa; /* Slightly greyed out for the cursor effect */
-  font-weight: 100;
+/* Optional: If you want the whole line centered, center the parent div, not the text */
+.header-container {
+  text-align: center;
 }
 /* ===========================
 End
