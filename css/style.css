@@ -1950,3 +1950,25 @@ End
     left:0;
 
 }
+
+/* optional */
+
+#overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.5);
+
+    display:none;
+
+    z-index:998;
+
+}
+
+#overlay.show{
+
+    display:block;
+
+}
