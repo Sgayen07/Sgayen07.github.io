@@ -43,11 +43,19 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
     }
-
+    
     /* ==========================================
        Mobile Sidebar
     ========================================== */
+   const menuToggle = document.getElementById("menuToggle");
+const sidebar = document.querySelector(".sidebar");
 
+menuToggle.addEventListener("click", () => {
+
+    sidebar.classList.toggle("open");
+
+});
+ /*
     const sidebar=document.querySelector(".sidebar");
 
     const menu=document.createElement("button");
@@ -62,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         sidebar.classList.toggle("active");
 
-    });
+    });*/
 
     /* ==========================================
        Close Sidebar on Link Click (Mobile)
