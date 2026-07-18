@@ -47,14 +47,25 @@ document.addEventListener("DOMContentLoaded", () => {
     /* ==========================================
        Mobile Sidebar
     ========================================== */
-   const menuToggle = document.getElementById("menuToggle");
-const sidebar = document.querySelector(".sidebar");
+  
 
-menuToggle.addEventListener("click", () => {
+   const menuToggle = document.getElementById("menuToggle");
+   const sidebar = document.querySelector(".sidebar");
+   const overlay = document.getElementById("overlay");
+
+    menuToggle.onclick = () => {
 
     sidebar.classList.toggle("open");
+    overlay.classList.toggle("show");
 
-});
+    };
+
+    overlay.onclick = () => {
+
+    sidebar.classList.remove("open");
+    overlay.classList.remove("show");
+
+    };
  /*
     const sidebar=document.querySelector(".sidebar");
 
