@@ -1543,35 +1543,7 @@ Back To Top Button
 Hamburger Menu
 =========================== */
 
-.menu-toggle{
 
-    display:none;
-
-    position:fixed;
-
-    top:20px;
-
-    left:20px;
-
-    width:50px;
-
-    height:50px;
-
-    border:none;
-
-    border-radius:10px;
-
-    background:var(--primary);
-
-    color:white;
-
-    font-size:22px;
-
-    cursor:pointer;
-
-    z-index:1200;
-
-}
 
 /* ===========================
 Smooth Transition
@@ -1648,28 +1620,20 @@ align-items:center;
 }
 
 .sidebar{
-
-position:fixed;
-
-left:-280px;
-
-top:0;
-
-width:260px;
-
-height:100vh;
-
-transition:.35s;
-
-z-index:1100;
-
+    position:fixed;
+    top:0;
+    left:-270px;
+    width:270px;
+    height:100vh;
+    background:#183153;
+    transition:left .3s ease;
+    z-index:1000;
 }
 
-.sidebar.active{
-
-left:0;
-
+.sidebar.open{
+    left:0;
 }
+
 
 .main-content{
 
@@ -1896,43 +1860,29 @@ End
 ================================= */
 
 .menu-button{
-
-    width:45px;
-
-    height:40px;
-
-    background:none;
-
+    position:fixed;
+    top:20px;
+    left:20px;
+    width:48px;
+    height:48px;
+    background:#1565C0;
     border:none;
-
-    cursor:pointer;
-
+    border-radius:8px;
     display:flex;
-
     flex-direction:column;
-
-    justify-content:space-between;
-
+    justify-content:space-evenly;
     padding:8px;
-
-    margin-bottom:30px;
-
+    cursor:pointer;
+    z-index:2000;
 }
 
 .menu-button span{
-
+    display:block;
     width:100%;
-
-    height:4px;
-
-    background:white;
-
-    border-radius:5px;
-
-    transition:.3s;
-
+    height:3px;
+    background:#fff;
+    border-radius:3px;
 }
-
 /* Sidebar Hidden */
 
 .sidebar{
