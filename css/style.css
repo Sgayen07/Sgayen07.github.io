@@ -577,7 +577,7 @@ TIMELINE
 }
 
 .timeline-content{
-    background:white;
+    background:var(--card);
     padding:25px;
     border-radius:14px;
     box-shadow:var(--shadow);
