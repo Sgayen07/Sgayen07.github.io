@@ -1898,7 +1898,7 @@ transform:scale(1.02);
 /* Ensure the cursor is also inline */
 .typed-cursor {
   display: inline-block;
-  margin-left: 5px; /* Adds a tiny bit of space between the last letter and the cursor */
+  margin-left: 0.5px; /* Adds a tiny bit of space between the last letter and the cursor */
 }
 /* ===========================
 End
