@@ -1887,7 +1887,7 @@ transform:scale(1.02);
 #typing-element {
   font-family: sans-serif; /* Adjust to match your preference */
   font-weight: 300;
-  color: #ffffff; /* Use white or a light grey */
+  color: #263238; /* Use white or a light grey */
 }
 
 /* This styles the cursor specifically */
