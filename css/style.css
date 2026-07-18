@@ -1900,6 +1900,67 @@ transform:scale(1.02);
   display: inline-block;
   margin-left: 0.5px; /* Adds a tiny bit of space between the last letter and the cursor */
 }
+
+
+/*===========================
+    Dark Mode Improvements
+===========================*/
+
+body.dark-mode img{
+
+filter:brightness(.95);
+
+}
+
+body.dark-mode .btn-outline{
+
+color:#ffffff;
+
+border-color:#ffffff;
+
+}
+
+body.dark-mode .btn-outline:hover{
+
+background:#ffffff;
+
+color:#000000;
+
+}
+
+body.dark-mode .timeline::before{
+
+background:var(--primary);
+
+}
+
+body.dark-mode .timeline-item::before{
+
+border-color:var(--card);
+
+}
+
+body.dark-mode table tr:nth-child(even) td{
+
+background:#252a31;
+
+}
+
+body.dark-mode .social-card:hover{
+
+background:var(--primary);
+
+}
+
+body.dark-mode .news-card span,
+
+body.dark-mode .experience-card span,
+
+body.dark-mode .year{
+
+color:white;
+
+}
 /* ===========================
 End
 =========================== */
