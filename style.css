@@ -408,3 +408,40 @@ footer p{
 }
 
 }
+
+/* Mobile Menu */
+.nav-links.active {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    width: 220px;
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+    gap: 20px;
+}
+
+/* Active navigation link */
+.nav-links a.active {
+    color: #38bdf8;
+}
+
+/* Scroll reveal animation */
+.hero-content,
+.hero-image,
+.about,
+.skills,
+.projects,
+.services,
+.contact {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s ease;
+}
+
+.show {
+    opacity: 1;
+    transform: translateY(0);
+}
