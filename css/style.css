@@ -1884,7 +1884,18 @@ img:hover{
 transform:scale(1.02);
 
 }
+#typing-element {
+  font-family: sans-serif; /* Adjust to match your preference */
+  font-weight: 300;
+  color: #ffffff; /* Use white or a light grey */
+}
 
+/* This styles the cursor specifically */
+.typed-cursor {
+  opacity: 1;
+  color: #aaa; /* Slightly greyed out for the cursor effect */
+  font-weight: 100;
+}
 /* ===========================
 End
 =========================== */
