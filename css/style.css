@@ -1448,7 +1448,8 @@ body.dark-mode .experience-card,
 body.dark-mode .info-box,
 body.dark-mode .contact-form,
 body.dark-mode .news-card,
-body.dark-mode .faq-item{
+body.dark-mode .faq-item,
+body.dark-mode .timeline-content{
 
     background:#1f1f1f;
 
