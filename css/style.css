@@ -435,7 +435,9 @@ a{
 
 .card{
 
-    background:white;
+    background:#000;
+    color:white;
+   
 
     border-radius:14px;
 
