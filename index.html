@@ -3,169 +3,267 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pragyan - TXT/Markdown Q&A Exporter</title>
+<title>TXT/Markdown Q&A Exporter</title>
 <style>
-  * { box-sizing: border-box; }
-  body { margin:0; font-family: Arial, "Noto Sans Bengali", sans-serif; background:#f5f7fb; color:#1f2937; }
-  .wrap { max-width:1050px; margin:32px auto; padding:0 18px; }
-  .card { background:#fff; border-radius:14px; padding:24px; box-shadow:0 4px 18px rgba(0,0,0,.08); }
-  h1 { margin:0 0 8px; font-size:30px; }
-  h2 { margin-top:26px; }
-  .muted { color:#6b7280; }
-  input[type=file] { margin:18px 0; width:100%; padding:12px; border:1px solid #d1d5db; border-radius:8px; background:#fafafa; }
-  .status { padding:12px 14px; border-radius:8px; margin:14px 0; display:none; }
-  .success { background:#ecfdf5; color:#065f46; display:block; }
-  .warning { background:#fffbeb; color:#92400e; display:block; }
-  .error { background:#fef2f2; color:#991b1b; display:block; }
-  .header, .row { display:grid; grid-template-columns:70px 1fr 180px; gap:12px; align-items:center; }
-  .header { font-weight:bold; padding:10px 0; border-bottom:2px solid #e5e7eb; }
-  .row { padding:13px 0; border-bottom:1px solid #eee; }
-  .q { white-space:pre-wrap; }
-  button { border:0; border-radius:8px; padding:12px 18px; cursor:pointer; font-weight:600; margin:6px 8px 0 0; }
-  .primary { background:#2563eb; color:#fff; }
-  .secondary { background:#111827; color:#fff; }
-  button:disabled { opacity:.5; cursor:not-allowed; }
-  .exports { display:none; margin-top:20px; }
-  .math { font-family: "Times New Roman", serif; color:#b91c1c; }
-  @media(max-width:700px){ .header,.row{grid-template-columns:55px 1fr 110px;font-size:14px;} }
+:root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,"Noto Sans Bengali",sans-serif;color:#222}
+body{margin:0;background:#fff}
+.main{max-width:900px;margin:0 auto;padding:2rem 1.25rem 3rem}
+h1{font-size:2rem;margin:.2rem 0 .8rem}
+p{line-height:1.55}
+.divider{height:1px;background:#ddd;margin:18px 0}
+.filebox{border:1px solid #ccc;border-radius:7px;padding:10px;width:100%;background:#fafafa}
+.notice{padding:12px 14px;border-radius:5px;margin:14px 0;display:none}
+.success{background:#eaf7ee;color:#176b32;display:block}
+.warning{background:#fff7df;color:#765700;display:block}
+.error{background:#fdecec;color:#a21d1d;display:block}
+.grid{display:grid;grid-template-columns:70px minmax(0,1fr) 170px;gap:12px;align-items:center}
+.head{font-weight:700;padding:8px 0}
+.row{padding:12px 0;border-bottom:1px solid #eee}
+.qtext{white-space:pre-wrap;word-break:break-word}
+input[type=checkbox]{width:18px;height:18px}
+button{border:1px solid #aaa;background:#fff;border-radius:7px;padding:10px 18px;font-weight:600;cursor:pointer}
+button.primary{background:#ff4b4b;border-color:#ff4b4b;color:white}
+button:hover{filter:brightness(.97)}
+.actions{margin-top:20px}
+.downloads{display:none;margin-top:18px}
+.download-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.download-grid button{width:100%;background:#f2f2f2}
+.math-preview{font-family:"Times New Roman",serif}
+@media(max-width:650px){.grid{grid-template-columns:48px minmax(0,1fr) 125px}.download-grid{grid-template-columns:1fr}}
 </style>
-<!-- Client-side libraries. GitHub Pages can serve this file directly. -->
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- Browser equivalents of matplotlib math images / python-pptx / FPDF -->
+<script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']]},svg:{fontCache:'global'}};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 </head>
 <body>
-<div class="wrap">
-<div class="card">
-<h1>📄 TXT/Markdown Q&A Exporter</h1>
-<p class="muted">Upload a <b>.txt</b> or <b>.md</b> file. Questions should start with <b>Q:</b> (or <b>প্র:</b>) and answers with <b>A:</b> (or <b>উ:</b>).</p>
-<input id="file" type="file" accept=".txt,.md,text/plain,text/markdown">
-<div id="status" class="status"></div>
-<div id="app" style="display:none">
+<div class="main">
+<h1>📄 TXT/Markdown Q&amp;A Exporter</h1>
+<p>Upload a <b>.txt</b> or <b>.md</b> file containing your questions and answers. Make sure questions start with <b>Q:</b> (or <b>প্র:</b>) and answers with <b>A:</b> (or <b>উ:</b>).</p>
+
+<input id="file" class="filebox" type="file" accept=".txt,.md,text/plain,text/markdown">
+<div id="status" class="notice"></div>
+
+<section id="app" hidden>
+<div class="divider"></div>
 <h2>Select Questions</h2>
-<div class="header"><div>Select</div><div>Question</div><div>Render Math as Images</div></div>
+<div class="grid head"><div>Select</div><div>Question</div><div>Render Math as Images</div></div>
+<div class="divider"></div>
 <div id="questions"></div>
-<div id="actions">
-<button class="primary" id="generate">🚀 Generate Files</button>
+<div class="divider"></div>
+<div id="selectError" class="notice"></div>
+<h2>Generate &amp; Download Exports</h2>
+<div class="actions">
+<button id="generate" class="primary">🚀 Generate Files</button>
 </div>
-<div id="exports" class="exports">
-<div class="status success">Files are ready for download!</div>
-<button class="secondary" id="ppt">📥 Download PowerPoint</button>
-<button class="secondary" id="pdf">📥 Download PDF</button>
+<div id="downloads" class="downloads">
+<div class="notice success">Files are ready for download!</div>
+<div class="download-grid">
+<button id="ppt">📥 Download PowerPoint</button>
+<button id="pdf">📥 Download PDF</button>
 </div>
 </div>
-</div>
+</section>
 </div>
 
 <script>
-let qaList = [];
+let qaList=[];
 
-function isBengali(text) { return /[\u0980-\u09FF]/.test(text); }
+function isBengali(t){return /[\u0980-\u09FF]/.test(t||'');}
 
-function formatOptions(text) {
-  text = text.replace(/\n/g, ' ');
-  for(let i=0;i<4;i++) text = text.replace(/\s+/g,' ');
-  text = text.replace(/(\s+[\(]?[ক-ঘA-D][\)\.])/g, '\\n$1');
+/* Convert escaped input such as \\\\frac into \\frac, but do not destroy
+   legitimate LaTeX. Also removes markdown artifacts only for normal text. */
+function normalizeLatex(s){
+  return (s||'')
+    .replace(/\r/g,'')
+    .replace(/\\\\(?=([A-Za-z]+|[{}()[\]$]))/g,'\\');
+}
+
+function extractMathParts(text){
+  text=normalizeLatex(text||'');
+  const parts=[];
+  // Order matters: display delimiters first.
+  const re=/(\$\$[\s\S]*?\$\$|\$[^$\n]+?\$|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\))/g;
+  let m,last=0;
+  while((m=re.exec(text))!==null){
+    parts.push({text:text.slice(last,m.index), math:m[0].replace(/^\$\$|\$\$$/g,'').replace(/^\$|\$$/g,'').replace(/^\\\[|\\\]$/g,'').replace(/^\\\(|\\\)$/g,'').trim()});
+    last=m.index+m[0].length;
+  }
+  parts.push({text:text.slice(last),math:null});
+  return parts;
+}
+
+function cleanMarkdown(text){
+  text=normalizeLatex(text||'');
+  text=text.replace(/^#+\s*/gm,'');
+  text=text.replace(/\*\*(.*?)\*\*/g,'$1').replace(/\*(.*?)\*/g,'$1');
+  text=text.replace(/__(.*?)__/g,'$1').replace(/_(.*?)_/g,'$1');
+  text=text.replace(/\[(.*?)\]\(.*?\)/g,'$1');
+  text=text.replace(/\\text\{([^{}]*)\}/g,'$1');
+  text=text.replace(/\\text/g,'').replace(/\\backslash/g,'');
+  text=text.replace(/\\\{/g,'').replace(/\\\}/g,'');
+  text=text.replace(/H_0/g,'H0').replace(/H_1/g,'H1');
+  text=text.replace(/Size=1/g,'size = 1');
+  text=text.replace(/\u00a0/g,' ').replace(/\u200b/g,'');
+  // Never expose math delimiters or raw LaTeX commands in normal text.
+  text=text.replace(/\$\$/g,'').replace(/\$/g,'');
+  text=text.replace(/\\(frac|dfrac|tfrac|sqrt|alpha|beta|theta|mu|sigma|geq|leq|mid|times|cdot|pm|sum|prod|infty|approx|neq)\b/g,'');
+  text=text.replace(/[{}]/g,'');
+  return text.replace(/[ \t]+/g,' ').trim();
+}
+
+function formatOptions(text){
+  text=(text||'').replace(/\r/g,'').replace(/\n/g,' ');
+  for(let i=0;i<4;i++) text=text.replace(/\s+/g,' ');
+  text=text.replace(/(\s+[\(]?[ক-ঘA-D][\)\.])/g,'\n$1');
   return text.trim();
 }
 
-function cleanMarkdown(text) {
-  text = text.replace(/^#+\s*/gm,'');
-  text = text.replace(/\*\*(.*?)\*\*/g,'$1').replace(/\*(.*?)\*/g,'$1');
-  text = text.replace(/__(.*?)__/g,'$1').replace(/_(.*?)_/g,'$1');
-  text = text.replace(/\[(.*?)\]\(.*?\)/g,'$1');
-  text = text.replace(/\\text\{([^}]*)\}/g,'$1');
-  text = text.replace(/\\text/g,'').replace(/\\backslash/g,'');
-  text = text.replace(/\\\{/g,'').replace(/\\\}/g,'');
-  text = text.replace(/\$/g,'');
-  text = text.replace(/\\frac\{([^}]*)\}\{([^}]*)\}/g,'($1) / ($2)');
-  text = text.replace(/\\beta/g,'β').replace(/\\theta/g,'θ').replace(/\\geq/g,'≥')
-             .replace(/\\leq/g,'≤').replace(/\\mid/g,'|').replace(/\\alpha/g,'α')
-             .replace(/\\mu/g,'μ').replace(/\\sigma/g,'σ');
-  text = text.replace(/H_0/g,'H0').replace(/H_1/g,'H1');
-  text = text.replace(/Size=1/g,'size = 1');
-  return text.replace(/\u00a0/g,' ').replace(/\u200b/g,'').replace(/\s+/g,' ').trim();
-}
-
-function parseMarkdown(md) {
-  const pattern = /(?:Q:|Question:?|প্র:|প্রশ্ন:?)\s*(.*?)\s*(?:A:|Answer:?|উ:|উত্তর:?)\s*(.*?)(?=(?:Q:|Question:?|প্র:|প্রশ্ন:?)|$)/gis;
+function parseMarkdown(md){
+  const pattern=/(?:Q:|Question:?|প্র:|প্রশ্ন:?)\s*(.*?)\s*(?:A:|Answer:?|উ:|উত্তর:?)\s*(.*?)(?=(?:Q:|Question:?|প্র:|প্রশ্ন:?)|$)/gis;
   const out=[]; let m;
-  while((m=pattern.exec(md))!==null) out.push({question:m[1].trim(), answer:m[2].trim()});
+  while((m=pattern.exec(md))!==null) out.push({question:m[1].trim(),answer:m[2].trim()});
   return out;
 }
 
-function setStatus(msg, type) {
-  const s=document.getElementById('status'); s.className='status '+type; s.textContent=msg;
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
+
+function normalQuestionText(q){
+  // Remove only math segments from the displayed normal text, as in the Python app.
+  return formatOptions(cleanMarkdown(extractMathParts(q).map(x=>x.math?x.text:x.text).join('')));
+}
+function normalAnswerText(a){
+  return cleanMarkdown(extractMathParts(a).map(x=>x.math?x.text:x.text).join(''));
 }
 
-function renderQuestions() {
-  const box=document.getElementById('questions'); box.innerHTML='';
-  qaList.forEach((qa,i)=>{
-    const row=document.createElement('div'); row.className='row';
-    row.innerHTML=`<div><input type="checkbox" class="sel" data-i="${i}" checked></div>
-      <div class="q"><b>Q:</b> ${escapeHtml(qa.question)}</div>
-      <div><input type="checkbox" class="math" data-i="${i}"></div>`;
-    box.appendChild(row);
-  });
+function setStatus(msg,type){
+ const el=document.getElementById('status');el.textContent=msg;el.className='notice '+type;
 }
-function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
 
-document.getElementById('file').addEventListener('change', async e=>{
-  const f=e.target.files[0]; if(!f)return;
-  const text=await f.text(); qaList=parseMarkdown(text);
-  if(!qaList.length){setStatus('No questions found in the file. Please ensure you use the correct format.','warning');return;}
-  setStatus(`Successfully loaded ${qaList.length} questions from the file!`,'success');
-  document.getElementById('app').style.display='block'; renderQuestions();
+function renderQuestions(){
+ const box=document.getElementById('questions');box.innerHTML='';
+ qaList.forEach((qa,i)=>{
+   const row=document.createElement('div');row.className='grid row';
+   row.innerHTML=`<div><input type="checkbox" class="sel" data-i="${i}" checked></div>
+   <div class="qtext"><b>Q:</b> ${escapeHtml(qa.question)}</div>
+   <div><input type="checkbox" class="math" data-i="${i}"></div>`;
+   box.appendChild(row);
+ });
+}
+
+document.getElementById('file').addEventListener('change',async e=>{
+ const f=e.target.files[0];if(!f)return;
+ const txt=await f.text();qaList=parseMarkdown(txt);
+ if(!qaList.length){
+   setStatus('No questions found in the file. Please ensure you use the correct format.','warning');
+   document.getElementById('app').hidden=true;return;
+ }
+ setStatus(`Successfully loaded ${qaList.length} questions from the file!`,'success');
+ document.getElementById('app').hidden=false;renderQuestions();
+ document.getElementById('downloads').style.display='none';
 });
 
-function selected() {
-  return [...document.querySelectorAll('.sel:checked')].map(x=>+x.dataset.i);
-}
+function selectedIndices(){return [...document.querySelectorAll('.sel:checked')].map(x=>+x.dataset.i);}
+function mathIndices(){return new Set([...document.querySelectorAll('.math:checked')].map(x=>+x.dataset.i));}
 
 document.getElementById('generate').addEventListener('click',()=>{
-  if(!selected().length){setStatus('Please select at least one question to generate files.','error');return;}
-  document.getElementById('exports').style.display='block';
-  setStatus('Files are ready for download!','success');
+ if(!selectedIndices().length){
+   const e=document.getElementById('selectError');e.textContent='Please select at least one question to generate files.';e.className='notice error';return;
+ }
+ document.getElementById('selectError').className='notice';
+ document.getElementById('downloads').style.display='block';
 });
 
-function questionText(qa){ return (isBengali(qa.question)?'প্রশ্ন: ':'Question: ')+formatOptions(cleanMarkdown(qa.question)); }
-function answerText(qa){ return (isBengali(qa.answer)?'উত্তর: ':'Answer: ')+cleanMarkdown(qa.answer); }
+async function renderMathToCanvas(formula,color='black'){
+ const holder=document.createElement('div');
+ holder.style.cssText='position:fixed;left:-10000px;top:0;background:transparent;color:'+color+';font-size:22px;padding:8px;white-space:nowrap;';
+ holder.innerHTML='\\('+normalizeLatex(formula)+'\\)';
+ document.body.appendChild(holder);
+ await MathJax.typesetPromise([holder]);
+ const canvas=await html2canvas(holder,{backgroundColor:null,scale:3});
+ document.body.removeChild(holder);
+ return canvas;
+}
 
-document.getElementById('ppt').addEventListener('click', async ()=>{
-  const ids=selected(); if(!ids.length)return;
-  const pptx=new pptxgen(); pptx.layout='LAYOUT_WIDE'; pptx.author='Pragyan';
-  pptx.subject='TXT/Markdown Q&A Export';
-  ids.forEach((idx,n)=>{
-    const qa=qaList[idx], slide=pptx.addSlide();
-    slide.addText((isBengali(qa.question)?'প্রশ্ন: ':'Question: ')+(n+1),{x:0.7,y:0.35,w:11.5,h:.45,fontSize:22,bold:true});
-    const q=questionText(qa), a=answerText(qa);
-    slide.addText(q,{x:0.9,y:1.3,w:11.2,h:1.6,fontSize:20,color:'FF0000',breakLine:false,margin:0,fit:'shrink'});
-    slide.addText(a,{x:0.9,y:3.0,w:11.2,h:2.5,fontSize:20,color:'000000',margin:0,fit:'shrink'});
-  });
-  await pptx.writeFile({fileName:'Pragyan_Q&A.pptx'});
+function addTextRunsToSlide(slide,segments,x,y,w,h,fontSize,color){
+ // Adds normal text; math is handled separately as image.
+ let cursorY=y;
+ for(const seg of segments){
+   if(seg.text){
+     const clean=formatOptions(cleanMarkdown(seg.text));
+     if(clean) { slide.addText(clean,{x,y:cursorY,w,h:h*.5,fontSize,color,margin:0,breakLine:false,fit:'shrink'}); cursorY+=h*.5; }
+   }
+ }
+ return cursorY;
+}
+
+async function buildPpt(){
+ const ids=selectedIndices(), maths=mathIndices();
+ const pptx=new pptxgen();
+ pptx.layout='LAYOUT_WIDE';pptx.author='Pragyan';pptx.subject='TXT/Markdown Q&A';
+ for(let n=0;n<ids.length;n++){
+   const originalIndex=ids[n],qa=qaList[originalIndex],slide=pptx.addSlide();
+   const beng=isBengali(qa.question);
+   slide.addText((beng?'প্রশ্ন: ':'Question: ')+(n+1),{x:.7,y:.35,w:11.6,h:.45,fontSize:22,bold:true,margin:0});
+   const qparts=extractMathParts(qa.question),aparts=extractMathParts(qa.answer);
+   let y=1.15;
+   const qnormal=formatOptions(cleanMarkdown(qparts.filter(s=>!s.math).map(s=>s.text).join('')));
+   if(qnormal) {slide.addText((beng?'প্রশ্ন: ':'Question: ')+qnormal,{x:.9,y,w:11.2,h:1.0,fontSize:20,color:'FF0000',margin:0,fit:'shrink'});y+=1.0;}
+   if(maths.has(originalIndex)){
+     for(const s of qparts) if(s.math){
+       const c=await renderMathToCanvas(s.math,'#ff0000');
+       slide.addImage({data:c.toDataURL('image/png'),x:.95,y,w:8,h:.65});y+=.85;
+     }
+   }
+   const alabel=isBengali(qa.answer)?'উত্তর: ':'Answer: ';
+   const anormal=cleanMarkdown(aparts.filter(s=>!s.math).map(s=>s.text).join(''));
+   if(anormal){slide.addText(alabel+anormal,{x:.9,y,w:11.2,h:1.0,fontSize:20,color:'000000',margin:0,fit:'shrink'});y+=1.0;}
+   if(maths.has(originalIndex)){
+     for(const s of aparts) if(s.math){
+       const c=await renderMathToCanvas(s.math,'#000000');
+       slide.addImage({data:c.toDataURL('image/png'),x:.95,y,w:8,h:.65});y+=.85;
+     }
+   }
+ }
+ await pptx.writeFile({fileName:'Pragyan_Q&A.pptx'});
+}
+
+async function buildPdf(){
+ const ids=selectedIndices(),maths=mathIndices();
+ const {jsPDF}=window.jspdf;const pdf=new jsPDF({orientation:'p',unit:'pt',format:'a4'});
+ for(let n=0;n<ids.length;n++){
+   if(n)pdf.addPage();
+   const qa=qaList[ids[n]],container=document.createElement('div');
+   container.style.cssText='position:fixed;left:-10000px;top:0;width:760px;padding:45px;background:#fff;font-family:Arial,"Noto Sans Bengali",sans-serif;font-size:20px;line-height:1.45;';
+   let html=`<div style="font-size:22px;font-weight:700;margin-bottom:22px">${escapeHtml((isBengali(qa.question)?'প্রশ্ন: ':'Question: ')+(n+1))}</div>`;
+   const qparts=extractMathParts(qa.question);
+   html+=`<div style="color:red;margin-bottom:18px;white-space:pre-wrap">${escapeHtml((isBengali(qa.question)?'প্রশ্ন: ':'Question: ')+formatOptions(cleanMarkdown(qparts.filter(s=>!s.math).map(s=>s.text).join('')))}</div>`;
+   if(maths.has(ids[n])) for(const s of qparts) if(s.math) html+=`<div class="math-preview" style="color:red;margin:12px 0">\\(${escapeHtml(s.math)}\\)</div>`;
+   const aparts=extractMathParts(qa.answer);
+   html+=`<div style="margin-top:15px;white-space:pre-wrap">${escapeHtml((isBengali(qa.answer)?'উত্তর: ':'Answer: ')+cleanMarkdown(aparts.filter(s=>!s.math).map(s=>s.text).join('')))}</div>`;
+   if(maths.has(ids[n])) for(const s of aparts) if(s.math) html+=`<div class="math-preview" style="margin:12px 0">\\(${escapeHtml(s.math)}\\)</div>`;
+   container.innerHTML=html;document.body.appendChild(container);
+   await MathJax.typesetPromise([container]);
+   const canvas=await html2canvas(container,{scale:2,backgroundColor:'#fff'});
+   document.body.removeChild(container);
+   const pw=pdf.internal.pageSize.getWidth(),ph=pdf.internal.pageSize.getHeight(),margin=25;
+   const ratio=Math.min((pw-2*margin)/canvas.width,(ph-2*margin)/canvas.height);
+   pdf.addImage(canvas.toDataURL('image/png'),'PNG',margin,margin,canvas.width*ratio,canvas.height*ratio);
+ }
+ pdf.save('Pragyan_Q&A.pdf');
+}
+
+document.getElementById('ppt').addEventListener('click',async()=>{
+ const b=document.getElementById('ppt');b.disabled=true;b.textContent='Preparing PowerPoint...';
+ try{await buildPpt();}catch(e){alert('PowerPoint generation failed: '+e.message);}finally{b.disabled=false;b.textContent='📥 Download PowerPoint';}
 });
-
-document.getElementById('pdf').addEventListener('click', async ()=>{
-  const ids=selected(); if(!ids.length)return;
-  const {jsPDF}=window.jspdf; const pdf=new jsPDF({orientation:'p',unit:'pt',format:'a4'});
-  for(let n=0;n<ids.length;n++){
-    if(n)pdf.addPage();
-    const qa=qaList[ids[n]];
-    const container=document.createElement('div');
-    container.style.cssText='position:fixed;left:-10000px;top:0;width:760px;padding:55px;background:white;font-family:Arial,"Noto Sans Bengali",sans-serif;font-size:20px;line-height:1.55;';
-    container.innerHTML=`<div style="font-size:22px;font-weight:bold;margin-bottom:24px;">${escapeHtml((isBengali(qa.question)?'প্রশ্ন: ':'Question: ')+(n+1))}</div>
-      <div style="color:red;margin-bottom:25px;white-space:pre-wrap;">${escapeHtml(questionText(qa))}</div>
-      <div style="white-space:pre-wrap;">${escapeHtml(answerText(qa))}</div>`;
-    document.body.appendChild(container);
-    const canvas=await html2canvas(container,{scale:2,backgroundColor:'#fff'});
-    document.body.removeChild(container);
-    const img=canvas.toDataURL('image/png');
-    const pageW=pdf.internal.pageSize.getWidth(), pageH=pdf.internal.pageSize.getHeight();
-    const ratio=Math.min((pageW-60)/canvas.width,(pageH-60)/canvas.height);
-    pdf.addImage(img,'PNG',30,30,canvas.width*ratio,canvas.height*ratio);
-  }
-  pdf.save('Pragyan_Q&A.pdf');
+document.getElementById('pdf').addEventListener('click',async()=>{
+ const b=document.getElementById('pdf');b.disabled=true;b.textContent='Preparing PDF...';
+ try{await buildPdf();}catch(e){alert('PDF generation failed: '+e.message);}finally{b.disabled=false;b.textContent='📥 Download PDF';}
 });
 </script>
 </body>
